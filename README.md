@@ -38,6 +38,7 @@ This project is currently in its early stages and is primarily a learning exerci
 
 ## Future Plans
 - Implement real-time messaging using WebSockets or gRPC.
+- Implement file upload feature.
 - Add more features like user profiles and group chats.
 - Optimize performance and improve code quality.
 - Explore advanced Docker configurations for scalability.
