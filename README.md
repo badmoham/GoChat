@@ -42,6 +42,7 @@ This project is currently in its early stages and is primarily a learning exerci
 - Add more features like user profiles and group chats.
 - Optimize performance and improve code quality.
 - Explore advanced Docker configurations for scalability.
+- Use JWT for authentication instead of Basic Auth
 
 ## License
 This project is for personal learning purposes only and does not have an official license. Feel free to use it as a reference for your own learning journey.
