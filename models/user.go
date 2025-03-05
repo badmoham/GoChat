@@ -9,4 +9,8 @@ type User struct {
 	Password    string    `gorm:"not null" json:"password"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
+
+	// relations
+	Messages []Message `gorm:"constraint:OnUpdate:CASCADE;OnDelete:CASCADE;"`
+	P2Ps     []P2P     `gorm:"many2many:user_p2p_chats;"`
 }
