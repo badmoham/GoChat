@@ -7,4 +7,5 @@ var (
 	DBUser     = os.Getenv("DB_USER")
 	DBPassword = os.Getenv("DB_PASSWORD")
 	DBName     = os.Getenv("DB_NAME")
+	JWTSecret  = os.Getenv("JWTSecret")
 )

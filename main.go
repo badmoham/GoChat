@@ -1,19 +1,13 @@
 package main
 
 import (
-	"net/http"
-
+	"GoChat/routes"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	router := gin.Default()
 
-	router.GET("/", sayHello)
-
+	routes.SetupUserRoutes(router)
 	router.Run("0.0.0.0:8080")
-}
-
-func sayHello(context *gin.Context) {
-	context.JSON(http.StatusOK, "hello world!")
 }
