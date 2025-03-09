@@ -11,16 +11,17 @@ type Message struct {
 	UpdatedAt time.Time `json:"updated_at"`
 
 	// relations
-	UserID   uint `json:"user_id"`
-	RoomType uint `json:"room_type"`
-	RoomID   uint `json:"room_id"`
+	UserID     uint `json:"user_id"`
+	ChatRoomID uint `json:"chat_room_id"`
 }
 
-type P2P struct {
-	ID uint `gorm:"primaryKey" json:"id"`
+type ChatRoom struct {
+	ID   uint `gorm:"primaryKey" json:"id"`
+	Type uint `gorm:"not null" json:"type"`
 
 	Messages  []Message `gorm:"constraint:OnUpdate:CASCADE;OnDelete:CASCADE;"`
-	Users     []User    `gorm:"many2many:user_p2p_chats;"`
+	Users     []User    `gorm:"many2many:user_chat_room;"`
+	Speaker   []User    `gorm:"many2many:speaker_chat_room;"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }

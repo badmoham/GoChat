@@ -11,6 +11,7 @@ type User struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 
 	// relations
-	Messages []Message `gorm:"constraint:OnUpdate:CASCADE;OnDelete:CASCADE;"`
-	P2Ps     []P2P     `gorm:"many2many:user_p2p_chats;"`
+	Messages       []Message  `gorm:"constraint:OnUpdate:CASCADE;OnDelete:CASCADE;"`
+	ChatRooms      []ChatRoom `gorm:"many2many:user_chat_room;"`
+	SpeakableRooms []ChatRoom `gorm:"many2many:speaker_chat_room;"`
 }
