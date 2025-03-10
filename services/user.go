@@ -24,7 +24,7 @@ func CreateUser(user *models.User) error {
 func AuthenticateUser(phoneNumber, password string) (string, error) {
 	var user models.User
 
-	result := config.DB.Where("phone_number = ?", phoneNumber).First(user)
+	result := config.DB.Where("phone_number = ?", phoneNumber).First(&user)
 	if result.Error != nil {
 		return "", errors.New("user not found, neither username or password is wrong")
 	}
@@ -37,4 +37,15 @@ func AuthenticateUser(phoneNumber, password string) (string, error) {
 		return "", errors.New("an error occurred while returning JWT")
 	}
 	return tokenString, nil
+}
+
+func ResolveUserIDFromPhoneNumber(phoneNumber string) (uint, error) {
+	var user models.User
+
+	result := config.DB.Where("phone_number = ?", phoneNumber).First(&user)
+	if result.Error != nil {
+		return 0, errors.New("phone number is not registered")
+	}
+	return user.ID, nil
+
 }

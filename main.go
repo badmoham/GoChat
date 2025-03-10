@@ -17,6 +17,9 @@ func main() {
 
 	router := gin.Default()
 
+	// add routes
 	routes.SetupUserRoutes(router)
+	routes.SetupChatRoutes(router)
+
 	router.Run("0.0.0.0:8080")
 }
