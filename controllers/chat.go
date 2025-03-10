@@ -53,3 +53,26 @@ func GetAllMyChat(cnx *gin.Context) {
 	cnx.JSON(http.StatusOK, allChats)
 
 }
+
+func SendTextMessage(cnx *gin.Context) {
+	var userInput struct {
+		JWTToken   string `json:"jwt_token" binding:"required"`
+		Message    string `json:"message" binding:"required"`
+		ChatRoomID uint   `json:"chat_room_id" binding:" required"`
+	}
+	if err := cnx.BindJSON(userInput); err != nil {
+		return
+	}
+	resolvedSourceUserID, err := services.DecryptJWT(userInput.JWTToken)
+	if err != nil {
+		cnx.JSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
+		return
+	}
+	err = services.SubmitTextMessage(resolvedSourceUserID, userInput.ChatRoomID, userInput.Message)
+	if err != nil {
+		cnx.JSON(http.StatusUnauthorized, err.Error())
+		return
+	}
+	cnx.JSON(http.StatusAccepted, gin.H{"message": "message was sent successfully"})
+
+}

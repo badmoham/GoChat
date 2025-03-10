@@ -8,4 +8,5 @@ import (
 func SetupChatRoutes(router *gin.Engine) {
 	router.POST("/create_personal_chat_room", controllers.StartPersonalChatRoom)
 	router.POST("/get_all_chats", controllers.GetAllMyChat)
+	router.POST("/send_text_message", controllers.SendTextMessage)
 }

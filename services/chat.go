@@ -9,6 +9,7 @@ import (
 )
 
 func CreateNewPersonalChat(sourceUserID, destUserID uint) (uint, error) {
+	// check for a p2p chat_room between 2 user.id return if exists, create if not
 	searchQuery := config.DB.Table("user_chat_room").
 		Joins("JOIN chat_rooms ON chat_rooms.id = user_chat_room.chat_room_id").
 		Where("user_chat_room.user_id IN (?, ?)", sourceUserID, destUserID).
@@ -84,4 +85,39 @@ func GetUserAllChats(UserID uint) ([]uint, error) {
 		return []uint{}, err
 	}
 	return chatRoomIDs, nil
+}
+
+func SubmitTextMessage(UserID, ChatRoomID uint, Message string) error {
+	// take user.id and chat_room.id and if user had thr right to speak in that room, will add users message
+	if !(len(Message) > 0) {
+		return errors.New("user can not send Empty messages")
+	}
+
+	var roomExistsAndAccessible bool
+
+	// Query the join table to check if the relationship exists
+	err := config.DB.Table("speaker_chat_room").
+		Select("1").
+		Where("user_id = ?", UserID).
+		Where("chat_room_id = ?", ChatRoomID).
+		Limit(1). // Limit to 1 result for efficiency
+		Scan(&roomExistsAndAccessible).Error
+	if err != nil {
+		return errors.New("query error")
+	}
+	if !roomExistsAndAccessible {
+		return errors.New("user does not have access to this chat")
+	}
+	msgRecord := models.Message{
+		Type:       enums.MessageTextOnly,
+		Text:       Message,
+		UserID:     UserID,
+		ChatRoomID: ChatRoomID,
+	}
+	err = config.DB.Create(&msgRecord).Error
+	if err != nil {
+		return errors.New("could not submit the message")
+	}
+	return nil
+
 }
