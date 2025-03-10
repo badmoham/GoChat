@@ -25,12 +25,13 @@ This project is currently in its early stages and is primarily a learning exerci
    ```bash
    git clone https://github.com/badmoham/GoChat
    ```
-2. Navigate to the project directory:
-3. Build and start the application using Docker Compose:
+2. Navigate to the project directory
+3. Copy and rename .env.example file to .env file name
+4. Build and start the application using Docker Compose:
    ```
    docker-compose up --build
    ```
-4. Access the API at `http://localhost:8080` (or the port specified in your `docker-compose.yml`).
+5. Access the API at `http://localhost:8080` (or the port specified in your `docker-compose.yml`).
 
 ### Notes:
 - Ensure Docker and Docker Compose are installed on your system.

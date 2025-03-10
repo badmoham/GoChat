@@ -33,3 +33,23 @@ func StartPersonalChatRoom(cnx *gin.Context) {
 
 	cnx.JSON(http.StatusCreated, gin.H{"message": "conversation started", "room_id": newChatID})
 }
+
+func GetAllMyChat(cnx *gin.Context) {
+	var userInput struct {
+		JWTToken string `json:"jwt_token" binding:"required"`
+	}
+	if err := cnx.BindJSON(userInput); err != nil {
+		return
+	}
+	resolvedSourceUserID, err := services.DecryptJWT(userInput.JWTToken)
+	if err != nil {
+		cnx.JSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
+		return
+	}
+	allChats, err := services.GetUserAllChats(resolvedSourceUserID)
+	if err != nil {
+		cnx.JSON(http.StatusServiceUnavailable, gin.H{"message": "query ran into an error"})
+	}
+	cnx.JSON(http.StatusOK, allChats)
+
+}

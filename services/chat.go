@@ -72,3 +72,16 @@ func CreateNewPersonalChat(sourceUserID, destUserID uint) (uint, error) {
 
 	return chatRoom.ID, nil
 }
+
+func GetUserAllChats(UserID uint) ([]uint, error) {
+	var chatRoomIDs []uint
+	err := config.DB.Table("user_chat_room").
+		Joins("JOIN chat_rooms ON chat_rooms.id = user_chat_room.chat_room_id").
+		Where("user_chat_room.user_id = ?", UserID).
+		Select("chat_rooms.id").
+		Scan(&chatRoomIDs).Error
+	if err != nil {
+		return []uint{}, err
+	}
+	return chatRoomIDs, nil
+}
