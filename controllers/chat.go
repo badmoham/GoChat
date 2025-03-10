@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	"GoChat/services"
 	"github.com/gin-gonic/gin"
@@ -74,5 +75,38 @@ func SendTextMessage(cnx *gin.Context) {
 		return
 	}
 	cnx.JSON(http.StatusAccepted, gin.H{"message": "message was sent successfully"})
+
+}
+
+func GetChatRoomMessages(cnx *gin.Context) {
+	// Parse query parameters
+	JWTToken := cnx.DefaultQuery("jwt_token", "")
+	chatID, err := strconv.ParseUint(cnx.Param("chat_id"), 10, 64)
+	if err != nil {
+		cnx.JSON(http.StatusBadRequest, gin.H{"message": "chat_id was not provided correctly"})
+		return
+	}
+	page, err := strconv.Atoi(cnx.DefaultQuery("page", "1"))
+	if err != nil {
+		cnx.JSON(http.StatusBadRequest, gin.H{"message": "page was not provided correctly"})
+		return
+	}
+	limit, err := strconv.Atoi(cnx.DefaultQuery("limit", "10"))
+	if err != nil || limit > 100 {
+		cnx.JSON(http.StatusBadRequest, gin.H{"message": "limit was not provided correctly"})
+		return
+	}
+	offset := (page - 1) * limit
+	resolvedSourceUserID, err := services.DecryptJWT(JWTToken)
+	if err != nil {
+		cnx.JSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
+		return
+	}
+	result, err := services.GetUserChatRoomMessages(resolvedSourceUserID, uint(chatID), limit, offset)
+	if err != nil {
+		cnx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+	cnx.JSON(http.StatusOK, result)
 
 }

@@ -121,3 +121,31 @@ func SubmitTextMessage(UserID, ChatRoomID uint, Message string) error {
 	return nil
 
 }
+
+func GetUserChatRoomMessages(UserID, chatID uint, limit, offset int) ([]models.Message, error) {
+	// will check whether User has access to ChatRoom and return paginated result if it has access
+	var userHaveAccess bool
+	var messages []models.Message
+	err := config.DB.Table("user_chat_room").
+		Select("1").
+		Where("user_id = ? ", UserID).
+		Where("chat_room_id = ? ", chatID).
+		Limit(1).
+		Scan(&userHaveAccess).Error
+	if err != nil {
+		return messages, errors.New("query failed")
+	}
+	if !userHaveAccess {
+		return nil, errors.New("user does not have access to this chat")
+	}
+	err = config.DB.
+		Where("chat_room_id = ? ", chatID).
+		Limit(limit).
+		Offset(offset).
+		Find(&messages).
+		Error
+	if err != nil {
+		return nil, errors.New("query ran into an error")
+	}
+	return messages, nil
+}
