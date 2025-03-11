@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package chat;
+
+service ChatService {
+  rpc ListMessages(ChatRequest) returns (MessageList);
+}
+
+message ChatRequest {
+  uint64 chat_room_id = 1;
+  string jwt_token = 2;
+  int64 page = 3;
+  int64 limit = 4;
+}
+
+message MessageList {
+  repeated Message messages = 1;
+}
+
+message Message {
+  uint64 id = 1;
+  uint64 type = 2;
+  string text = 3;
+  uint64 user_id = 4;
+  uint64 chat_room_id = 5;
+  string created_at = 6;
+  string updated_at = 7;
+} // TODO: generate GO file | implement its service in go

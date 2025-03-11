@@ -6,7 +6,8 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "8080:8080"   # REST API
+      - "50051:50051" # gRPC API
     environment:
       - DATABASE_URL
       - DB_HOST
