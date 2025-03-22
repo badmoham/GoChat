@@ -5,7 +5,9 @@ import (
 	"net"
 
 	"GoChat/config"
+	mygrpc "GoChat/grpc"
 	"GoChat/models"
+	"GoChat/proto/chat"
 	"GoChat/routes"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
@@ -33,7 +35,7 @@ func main() {
 		}
 
 		grpcServer := grpc.NewServer()
-		// TODO: add routes to gRPC
+		chat.RegisterChatServiceServer(grpcServer, mygrpc.NewChatServer())
 
 		log.Println("gRPC server running on :50051")
 		if err := grpcServer.Serve(listener); err != nil {
